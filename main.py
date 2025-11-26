@@ -1,14 +1,14 @@
+from pprint import pprint
+import typing as typ
+
 from src import (
     Atom,
     Not,
-    check_consistency,
     Default,
     Theory,
     generate_integer_atoms,
     Expression,
 )
-from pprint import pprint
-import typing as typ
 
 
 def test1() -> None:
