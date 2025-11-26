@@ -21,7 +21,7 @@ class Expression(ABC):
         if len(slots := self._slots()) == 1:
             item = getattr(self, slots[0])
             if isinstance(item, list):
-                s = ", ".join([str(x) for x in item])
+                s = ", ".join(str(x) for x in item)
                 # s = ", ".join([str(x) if isinstance(x, Atom) else x for x in item])
             else:
                 s = f"{item!r}" if not isinstance(item, Atom) else str(item)
@@ -31,8 +31,7 @@ class Expression(ABC):
 
     def __eq__(self, other: Expression) -> bool:
         return (type(self) is type(other)) and all(
-            getattr(self, k, None) == getattr(other, k, None)
-            for k in getattr(self, "__slots__", [])
+            getattr(self, k, None) == getattr(other, k, None) for k in self._slots()
         )
 
     def _slots(self) -> list[str]:
@@ -40,8 +39,11 @@ class Expression(ABC):
         assert slots
         return slots
 
+    def asdict(self) -> tuple[str, dict]:
+        return (self.__class__.__name__, {k: getattr(self, k) for k in self._slots()})
+
     def atoms(self) -> set[str]:
-        atoms = set()
+        atoms: set[str] = set()
         for k in getattr(self, "__slots__", []):
             if isinstance(item := getattr(self, k), str):
                 atoms.add(item)
